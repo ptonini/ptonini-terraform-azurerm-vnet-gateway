@@ -1,10 +1,10 @@
 module "subnet" {
-  source           = "github.com/ptonini/terraform-azurerm-subnet?ref=v1"
+  source           = "ptonini/subnet/azurerm"
+  version          = "~> 1.0.0"
   name             = "GatewaySubnet"
   rg               = var.rg
   vnet             = var.vnet
   address_prefixes = var.address_prefixes
-
 }
 
 resource "azurerm_public_ip" "this" {
