@@ -2,7 +2,7 @@ variable "name" {}
 
 variable "rg" {
   type = object({
-    name = string
+    name     = string
     location = string
   })
 }
@@ -23,4 +23,13 @@ variable "vnet2vnet_conns" {
     shared_key = string
   }))
   default = {}
+}
+
+variable "vpn_client" {
+  default = null
+
+}
+
+variable "custom_routes" {
+  default = null
 }
