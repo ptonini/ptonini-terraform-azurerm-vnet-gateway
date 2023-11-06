@@ -37,7 +37,7 @@ variable "site2site_conns" {
       ipsec_encryption = optional(string)
       ipsec_integrity  = optional(string)
       pfs_group        = optional(string)
-    }))
+    }), {})
   }))
   default = {}
 }
