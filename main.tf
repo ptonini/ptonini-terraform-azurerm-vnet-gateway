@@ -96,13 +96,16 @@ resource "azurerm_virtual_network_gateway_connection" "site2site" {
   virtual_network_gateway_id = azurerm_virtual_network_gateway.this.id
   local_network_gateway_id   = azurerm_local_network_gateway.this[each.key].id
   shared_key                 = each.value.shared_key
-  ipsec_policy {
-    dh_group         = each.value.ipsec_policy.dh_group
-    ike_encryption   = each.value.ipsec_policy.ike_encryption
-    ike_integrity    = each.value.ipsec_policy.ike_integrity
-    ipsec_encryption = each.value.ipsec_policy.ipsec_encryption
-    ipsec_integrity  = each.value.ipsec_policy.ipsec_integrity
-    pfs_group        = each.value.ipsec_policy.pfs_group
+  dynamic "ipsec_policy" {
+    for_each = each.value.ipsec_policy == null ? {} : { 0 = {} }
+    content {
+      dh_group         = each.value.ipsec_policy.dh_group
+      ike_encryption   = each.value.ipsec_policy.ike_encryption
+      ike_integrity    = each.value.ipsec_policy.ike_integrity
+      ipsec_encryption = each.value.ipsec_policy.ipsec_encryption
+      ipsec_integrity  = each.value.ipsec_policy.ipsec_integrity
+      pfs_group        = each.value.ipsec_policy.pfs_group
+    }
   }
 }
 

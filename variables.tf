@@ -31,13 +31,14 @@ variable "site2site_conns" {
     address_space   = set(string)
     shared_key      = string
     ipsec_policy = optional(object({
-      dh_group         = optional(string)
-      ike_encryption   = optional(string)
-      ike_integrity    = optional(string)
-      ipsec_encryption = optional(string)
-      ipsec_integrity  = optional(string)
-      pfs_group        = optional(string)
-    }), {})
+      dh_group         = string
+      ike_encryption   = string
+      ike_integrity    = string
+      ipsec_encryption = string
+      ipsec_integrity  = string
+      pfs_group        = string
+      sa_lifetime      = optional(string)
+    }))
   }))
   default = {}
 }
