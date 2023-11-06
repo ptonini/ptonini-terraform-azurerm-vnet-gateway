@@ -14,7 +14,10 @@ resource "azurerm_public_ip" "this" {
   allocation_method   = "Dynamic"
   lifecycle {
     ignore_changes = [
-      tags
+      tags.business_unit,
+      tags.environment,
+      tags.product,
+      tags.subscription_type
     ]
   }
 }
@@ -67,18 +70,42 @@ resource "azurerm_virtual_network_gateway" "this" {
   }
   lifecycle {
     ignore_changes = [
-      tags
+      tags.business_unit,
+      tags.environment,
+      tags.product,
+      tags.subscription_type
     ]
   }
+}
+
+resource "azurerm_local_network_gateway" "this" {
+  for_each            = var.site2site_conns
+  name                = each.key
+  resource_group_name = azurerm_virtual_network_gateway.this.resource_group_name
+  location            = azurerm_virtual_network_gateway.this.location
+  gateway_address     = each.value.gateway_address
+  address_space       = each.value.address_space
+}
+
+resource "azurerm_virtual_network_gateway_connection" "site2site" {
+  for_each                   = var.site2site_conns
+  name                       = each.key
+  resource_group_name        = azurerm_virtual_network_gateway.this.resource_group_name
+  location                   = azurerm_virtual_network_gateway.this.location
+  type                       = "IPsec"
+  virtual_network_gateway_id = azurerm_virtual_network_gateway.this.id
+  local_network_gateway_id   = azurerm_local_network_gateway.this[each.key].id
+  shared_key                 = each.value.shared_key
 }
 
 resource "azurerm_virtual_network_gateway_connection" "vnet2vnet" {
   for_each                        = var.vnet2vnet_conns
   name                            = each.key
+  resource_group_name             = azurerm_virtual_network_gateway.this.resource_group_name
+  location                        = azurerm_virtual_network_gateway.this.location
   type                            = "Vnet2Vnet"
-  resource_group_name             = var.rg.name
-  location                        = var.rg.location
   virtual_network_gateway_id      = azurerm_virtual_network_gateway.this.id
   peer_virtual_network_gateway_id = each.value.gateway_id
   shared_key                      = each.value.shared_key
 }
+

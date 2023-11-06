@@ -25,6 +25,15 @@ variable "vnet2vnet_conns" {
   default = {}
 }
 
+variable "site2site_conns" {
+  type = map(object({
+    gateway_address = string
+    address_space   = set(string)
+    shared_key      = string
+  }))
+  default = {}
+}
+
 variable "vpn_client" {
   default = null
 
