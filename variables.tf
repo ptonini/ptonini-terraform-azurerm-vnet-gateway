@@ -30,6 +30,14 @@ variable "site2site_conns" {
     gateway_address = string
     address_space   = set(string)
     shared_key      = string
+    ipsec_policy = optional(object({
+      dh_group         = optional(string)
+      ike_encryption   = optional(string)
+      ike_integrity    = optional(string)
+      ipsec_encryption = optional(string)
+      ipsec_integrity  = optional(string)
+      pfs_group        = optional(string)
+    }))
   }))
   default = {}
 }
