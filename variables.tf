@@ -12,7 +12,7 @@ variable "type" {
 }
 
 variable "sku" {
-  default = "VpnGtw1"
+  default = "VpnGw1"
 }
 
 variable "vpn_type" {
