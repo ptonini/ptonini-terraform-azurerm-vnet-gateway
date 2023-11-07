@@ -26,9 +26,9 @@ resource "azurerm_virtual_network_gateway" "this" {
   name                = var.name
   resource_group_name = var.rg.name
   location            = var.rg.location
-  type                = "Vpn"
-  sku                 = "VpnGw1"
-  vpn_type            = "RouteBased"
+  type                = var.type
+  sku                 = var.sku
+  vpn_type            = var.type
   active_active       = false
   enable_bgp          = false
   ip_configuration {

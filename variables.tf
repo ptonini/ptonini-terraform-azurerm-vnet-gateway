@@ -7,6 +7,18 @@ variable "rg" {
   })
 }
 
+variable "type" {
+  default = "Vpn"
+}
+
+variable "sku" {
+  default = "VpnGtw1"
+}
+
+variable "vpn_type" {
+  default = "RouteBased"
+}
+
 variable "vnet" {
   type = object({
     name = string
