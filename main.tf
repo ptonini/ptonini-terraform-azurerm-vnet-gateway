@@ -36,7 +36,7 @@ resource "azurerm_virtual_network_gateway" "this" {
     name                          = "vnetGatewayConfig"
     public_ip_address_id          = azurerm_public_ip.this.id
     private_ip_address_allocation = "Dynamic"
-    subnet_id                     = var.subnet == null ? var.subnet_id : module.subnet.this[0].id
+    subnet_id                     = var.subnet == null ? var.subnet_id : module.subnet[0].this.id
   }
   dynamic "custom_route" {
     for_each = var.custom_routes == null ? [] : [0]

@@ -3,7 +3,7 @@ output "this" {
 }
 
 output "subnet_id" {
-  value = var.subnet == null ? var.subnet_id : module.subnet.this[0].id
+  value = var.subnet == null ? var.subnet_id : module.subnet[0].this.id
 }
 
 output "public_ip" {
