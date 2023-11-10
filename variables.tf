@@ -19,15 +19,20 @@ variable "vpn_type" {
   default = "RouteBased"
 }
 
-variable "vnet" {
+variable "subnet" {
   type = object({
-    name = string
+    vnet = object({
+      name = string
+    })
+    address_prefixes = list(string)
   })
+  default = null
 }
 
-variable "address_prefixes" {
-  type = list(string)
+variable "subnet_id" {
+  default = null
 }
+
 
 variable "vnet2vnet_conns" {
   type = map(object({
@@ -56,6 +61,16 @@ variable "site2site_conns" {
 }
 
 variable "vpn_client" {
+  type = object({
+    address_space        = set(string)
+    vpn_client_protocols = set(string)
+    vpn_auth_types       = set(string)
+    aad_tenant           = optional(string)
+    aad_issuer           = optional(string)
+    aad_audience         = optional(string)
+    root_certificates    = optional(map(string), {})
+    revoked_certificates = optional(map(string), {})
+  })
   default = null
 
 }

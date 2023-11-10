@@ -1,10 +1,11 @@
 module "subnet" {
   source           = "ptonini/subnet/azurerm"
   version          = "~> 1.0.0"
+  count            = var.subnet == null ? [] : [0]
   name             = "GatewaySubnet"
   rg               = var.rg
-  vnet             = var.vnet
-  address_prefixes = var.address_prefixes
+  vnet             = var.subnet.vnet
+  address_prefixes = var.subnet.address_prefixes
 }
 
 resource "azurerm_public_ip" "this" {
@@ -14,10 +15,10 @@ resource "azurerm_public_ip" "this" {
   allocation_method   = "Dynamic"
   lifecycle {
     ignore_changes = [
-      tags.business_unit,
-      tags.environment,
-      tags.product,
-      tags.subscription_type
+      tags["business_unit"],
+      tags["environment"],
+      tags["product"],
+      tags["subscription_type"]
     ]
   }
 }
@@ -35,32 +36,32 @@ resource "azurerm_virtual_network_gateway" "this" {
     name                          = "vnetGatewayConfig"
     public_ip_address_id          = azurerm_public_ip.this.id
     private_ip_address_allocation = "Dynamic"
-    subnet_id                     = module.subnet.this.id
+    subnet_id                     = var.subnet == null ? var.subnet_id : module.subnet.this[0].id
   }
   dynamic "custom_route" {
-    for_each = var.custom_routes == null ? {} : { dummy = null }
+    for_each = var.custom_routes == null ? [] : [0]
     content {
       address_prefixes = var.custom_routes
     }
   }
   dynamic "vpn_client_configuration" {
-    for_each = var.vpn_client == null ? {} : { this = var.vpn_client }
+    for_each = var.vpn_client == null ? [] : [0]
     content {
-      address_space        = vpn_client_configuration.value["address_space"]
-      vpn_client_protocols = vpn_client_configuration.value["protocols"]
-      vpn_auth_types       = vpn_client_configuration.value["auth_types"]
-      aad_tenant           = try(vpn_client_configuration.value["aad_tenant"], null)
-      aad_issuer           = try(vpn_client_configuration.value["aad_issuer"], null)
-      aad_audience         = try(vpn_client_configuration.value["aad_audience"], null)
+      address_space        = var.vpn_client.address_space
+      vpn_client_protocols = var.vpn_client.protocols
+      vpn_auth_types       = var.vpn_client.auth_types
+      aad_tenant           = var.vpn_client.aad_tenant
+      aad_issuer           = var.vpn_client.aad_issuer
+      aad_audience         = var.vpn_client.aad_audience
       dynamic "root_certificate" {
-        for_each = try(var.vpn_client["root_certificates"], {})
+        for_each = var.vpn_client.root_certificates
         content {
           name             = root_certificate.key
           public_cert_data = root_certificate.value
         }
       }
       dynamic "revoked_certificate" {
-        for_each = try(var.vpn_client["revoked_certificates"], {})
+        for_each = var.vpn_client.revoked_certificates
         content {
           name       = revoked_certificate.key
           thumbprint = revoked_certificate.value
@@ -70,10 +71,10 @@ resource "azurerm_virtual_network_gateway" "this" {
   }
   lifecycle {
     ignore_changes = [
-      tags.business_unit,
-      tags.environment,
-      tags.product,
-      tags.subscription_type
+      tags["business_unit"],
+      tags["environment"],
+      tags["product"],
+      tags["subscription_type"]
     ]
   }
 }
@@ -97,7 +98,7 @@ resource "azurerm_virtual_network_gateway_connection" "site2site" {
   local_network_gateway_id   = azurerm_local_network_gateway.this[each.key].id
   shared_key                 = each.value.shared_key
   dynamic "ipsec_policy" {
-    for_each = each.value.ipsec_policy == null ? {} : { 0 = {} }
+    for_each = each.value.ipsec_policy == null ? [] : [0]
     content {
       dh_group         = each.value.ipsec_policy.dh_group
       ike_encryption   = each.value.ipsec_policy.ike_encryption
