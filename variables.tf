@@ -63,8 +63,8 @@ variable "site2site_conns" {
 variable "vpn_client" {
   type = object({
     address_space        = set(string)
-    vpn_client_protocols = set(string)
-    vpn_auth_types       = set(string)
+    protocols            = set(string)
+    auth_types           = set(string)
     aad_tenant           = optional(string)
     aad_issuer           = optional(string)
     aad_audience         = optional(string)
