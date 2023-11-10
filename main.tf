@@ -1,7 +1,7 @@
 module "subnet" {
   source           = "ptonini/subnet/azurerm"
   version          = "~> 1.0.0"
-  count            = var.subnet == null ? [] : [0]
+  count            = var.subnet == null ? 0 : 1
   name             = "GatewaySubnet"
   rg               = var.rg
   vnet             = var.subnet.vnet
