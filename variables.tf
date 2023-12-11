@@ -34,18 +34,12 @@ variable "subnet_id" {
 }
 
 
-variable "vnet2vnet_conns" {
+variable "connections" {
   type = map(object({
-    gateway_id = string
-    shared_key = string
-  }))
-  default = {}
-}
-
-variable "site2site_conns" {
-  type = map(object({
-    gateway_address = string
-    address_space   = set(string)
+    type = optional(string, "Vnet2Vnet")
+    gateway_id = optional(string)
+    gateway_address = optional(string)
+    address_space   = optional(set(string))
     shared_key      = string
     ipsec_policy = optional(object({
       dh_group         = string
@@ -60,7 +54,7 @@ variable "site2site_conns" {
   default = {}
 }
 
-variable "vpn_client" {
+variable "vpn_client_configuration" {
   type = object({
     address_space        = set(string)
     protocols            = set(string)
