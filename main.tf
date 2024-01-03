@@ -17,6 +17,7 @@ resource "azurerm_public_ip" "this" {
   lifecycle {
     ignore_changes = [
       tags["business_unit"],
+      tags["environment_finops"],
       tags["environment"],
       tags["product"],
       tags["subscription_type"]
@@ -41,11 +42,8 @@ resource "azurerm_virtual_network_gateway" "this" {
     subnet_id                     = coalesce(var.subnet_id, module.subnet[0].this.id)
   }
 
-  dynamic "custom_route" {
-    for_each = var.custom_routes[*]
-    content {
-      address_prefixes = custom_route.value
-    }
+  custom_route {
+    address_prefixes = var.custom_routes
   }
 
   dynamic "vpn_client_configuration" {
@@ -79,6 +77,7 @@ resource "azurerm_virtual_network_gateway" "this" {
   lifecycle {
     ignore_changes = [
       tags["business_unit"],
+      tags["environment_finops"],
       tags["environment"],
       tags["product"],
       tags["subscription_type"]
