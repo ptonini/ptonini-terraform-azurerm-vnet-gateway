@@ -13,6 +13,7 @@ resource "azurerm_public_ip" "this" {
   resource_group_name = var.rg.name
   location            = var.rg.location
   allocation_method   = "Dynamic"
+  sku                 = "Basic"
 
   lifecycle {
     ignore_changes = [
